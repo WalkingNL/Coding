@@ -1,25 +1,33 @@
+/*****************************************************************************/
+// gongqb June 6, 2019.
+// how to construct a BinaryTree
+/*****************************************************************************/
+
 #include <cstdio>
 #include "BinaryTree.h"
 
+// to create a BinaryTreeNode
 BinaryTreeNode* CreateBinaryTreeNode(int value)
 {
 	BinaryTreeNode* pNode = new BinaryTreeNode();
-	pNode->m_nValue = value;
-	pNode->m_pLeft = nullptr;
-	pNode->m_pRight = nullptr;
+	pNode->m_nValue = value; // assign value to m_nValue
+	pNode->m_pLeft = nullptr; // * assign nullptr to m_pLeft
+	pNode->m_pRight = nullptr; // * assign nullptr to m_pRight
 
-	return pNode;
+	return pNode; // return pNode
 }
 
+// to construct BinaryTree. these nodes created in CreateBinaryTreeNode() are connected to form a Binary Tree
 void ConnectTreeNoes(BinaryTreeNode* pParent, BinaryTreeNode* pLeft, BinaryTreeNode* pRight)
 {
-	if(pParent != nullptr)
+	if(pParent != nullptr) // is nullptr
 	{
 		pParent->m_pLeft = pLeft;
 		pParent->m_pRight = pRight;
 	}
 }
 
+// to output operation
 void PrintTreeNode(const BinaryTreeNode* pNode)
 {
 	if(pNode != nullptr)
@@ -62,6 +70,9 @@ void PrintTree(const BinaryTreeNode* pRoot)
 	}
 }
 
+// to destroy a binary tree. the destruction operation includes two steps:
+// (1) to move the pointer to his two child nodes repectively
+// (2) delete operation and assign nullptr to it
 void DestroyTree(BinaryTreeNode* pRoot)
 {
 	if(pRoot != nullptr)
