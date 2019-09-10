@@ -1,5 +1,10 @@
+/************************************************************************************/
+// gongqb June 7, 2019
+// To translate a Binary Search Tree to a sorted double linked list.
+/************************************************************************************/
+
+
 #include <cstdio>
-// #include <stdlib.h>
 #include "../Utilities/BinaryTree.h"
 
 void ConvertNode(BinaryTreeNode* pNode, BinaryTreeNode** pLastNodeInList);
@@ -36,6 +41,7 @@ void ConvertNode(BinaryTreeNode* pNode, BinaryTreeNode** pLastNodeInList)
 		ConvertNode(pCurrent->m_pRight, pLastNodeInList);
 }
 
+// to print the double Linked list after translation
 void PrintDoubleLinkedList(BinaryTreeNode* pHeadOfList)
 {
 	BinaryTreeNode* pNode = pHeadOfList;
@@ -66,29 +72,35 @@ void PrintDoubleLinkedList(BinaryTreeNode* pHeadOfList)
 	
 }
 
+// to destroy
 void DestroyList(BinaryTreeNode* pHeadOfList)
 {
 	BinaryTreeNode* pNode = pHeadOfList;
 	while(pNode != NULL)
 	{
-		BinaryTreeNode* pNext = pNode->m_pRight;
-
-		
+		BinaryTreeNode* pNext = pNode->m_pRight;	
 	}
 }
 
-void Test(char* testName, BinaryTreeNode* pRootOfTree)
+void Case(char* testName, BinaryTreeNode* pRootOfTree)
 {
 	if(testName != nullptr)
 		printf("%s begins: \n", testName);
 
-	PrintTree(pRootOfTree);
+	PrintTree(pRootOfTree); // orginal Binary Tree
 	
+	// the operation of translation
 	BinaryTreeNode* pHeadOfList = Convert(pRootOfTree);
+	
+	// the operation of output
 	PrintDoubleLinkedList(pHeadOfList);
 }
 
-void Test1()
+// It's a test case
+// to construct a binary tree
+// to test, "Case()"
+// to destroy()
+void MyCase1()
 {
 	BinaryTreeNode* pNode10 = CreateBinaryTreeNode(10);
 	BinaryTreeNode* pNode6 = CreateBinaryTreeNode(6);
@@ -102,15 +114,15 @@ void Test1()
 	ConnectTreeNoes(pNode6, pNode4, pNode8);
 	ConnectTreeNoes(pNode14, pNode12, pNode16);
 
-	Test("Test1", pNode10);
+	Case("MyCase1", pNode10);
 	
 	DestroyList(pNode4);
 }
 
+// main method
 int main(int argc, char* arg[])
 {
-	Test1();
-	
+	MyCase1();	
 
 	return 0;
 }
