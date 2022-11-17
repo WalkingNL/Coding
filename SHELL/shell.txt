@@ -1,0 +1,1 @@
+Usage: letter-count.sh file letters

@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "__availability": "c",
+        "atomic": "c",
+        "cstdlib": "c",
+        "ctime": "c",
+        "cmath": "c",
+        "new": "c"
+    }
+}
