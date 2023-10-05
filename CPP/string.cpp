@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     string str = "hello world";
 
     cout << "before: " << str << endl;
-    str.erase(str.begin() + 5);
+    str.erase(str.begin()+5, str.end()-2);
 
     cout << "after: " << str << endl;
 

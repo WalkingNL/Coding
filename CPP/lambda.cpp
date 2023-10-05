@@ -2,7 +2,7 @@
 #include <iostream>
 
 std::function<int(int)> make_adder(int x) {
-    return x { return x + y; };
+    return [x](int y) { return x + y; };
 }
 
 int main() {

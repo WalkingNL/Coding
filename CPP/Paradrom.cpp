@@ -1,3 +1,7 @@
+#include <iostream>
+#include <string>
+#include <cassert>
+using namespace std;
 class Solution {
 public:
     string shortestPalindrome(string s) {
@@ -36,7 +40,6 @@ public:
             }
             
         }
-
         
         while (high > 0)
         {
@@ -83,3 +86,12 @@ public:
         return string(str);
     }
 };
+
+int main(int argc, char* argv[]) {
+
+    Solution s;
+    string str = "aacecaaa";
+    cout << s.shortestPalindrome(str) << endl;
+    
+    return 0;
+}
