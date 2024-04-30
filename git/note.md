@@ -87,4 +87,20 @@ git push -u origin qabil_test_branch
 ```
 Note: push the new branch `qabil_test_branch` to remote base.
 
+---
+```
+git branch -d branch-name
+```
+Note: delete local branch
+
+```
+git branch -D branch-name
+git branch -d --force branch-name
+```
+Note: delete forcefully local branch
+
+```
+git push origin --delete branch-name
+```
+Note: delete the remote branch.
 
