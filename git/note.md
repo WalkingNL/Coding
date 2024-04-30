@@ -80,5 +80,11 @@ By following these steps, you should be able to successfully integrate the remot
 ```
   git checkout -b qabil_test_branch
 ```
-Note: create and switch
+Note: create and switch to new branch `qabil_test_branch`, this new branch is a local branch currently.
+
+```
+git push -u origin qabil_test_branch
+```
+Note: push the new branch `qabil_test_branch` to remote base.
+
 
