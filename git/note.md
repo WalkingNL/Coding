@@ -75,3 +75,10 @@ git push origin main
 **Final Note:** Always communicate with your team when performing operations that affect the shared repository (like `rebase`), as these can complicate the project history for others.
 
 By following these steps, you should be able to successfully integrate the remote changes and continue with your work. Remember, regular pulls from the remote repository can help minimize these issues.
+
+---
+```
+  git checkout -b qabil_test_branch
+```
+Note: create and switch
+
