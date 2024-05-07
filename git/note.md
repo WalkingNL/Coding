@@ -107,10 +107,10 @@ Note: delete the remote branch.
 
 ## Rebase
 
-![original image](https://github.com/WalkingNL/Pics/before_rebase.png)
+![original image](https://github.com/WalkingNL/Pics/blob/master/before_rebase.png)
 
 
-![rebasing](https://github.com/WalkingNL/Pics/rebasing.png)
+![rebasing](https://github.com/WalkingNL/Pics/blob/master/rebasing.png)
 
 
-![merge](https://github.com/WalkingNL/Pics/merged.png)
+![merge](https://github.com/WalkingNL/Pics/blob/master/merged.png)
