@@ -104,3 +104,13 @@ git push origin --delete branch-name
 ```
 Note: delete the remote branch.
 
+
+## Rebase
+
+![original image](https://github.com/WalkingNL/Pics/before_rebase.png)
+
+
+![rebasing](https://github.com/WalkingNL/Pics/rebasing.png)
+
+
+![merge](https://github.com/WalkingNL/Pics/merged.png)
