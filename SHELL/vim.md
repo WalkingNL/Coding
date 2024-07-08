@@ -13,67 +13,83 @@
   > to configure vim settings
 - where is the file placed
   > your home directory. ~/.vimrc
-- how should I do if the file does not exist
+- how should i do if the file does not exist
   > to create this file using command `vim ~/.vimrc`, and input the content below
 
     `.vimrc` file
   
     ```txt
-    " Configuration file for vim 
+    " configuration file for vim 
 
-    " Disable modelines for security (CVE-2007-2438)
+    " disable modelines for security (cve-2007-2438)
     set modelines=0
 
-    " Normally we use vim-extensions. If you want true vi-compatibility
+    " normally we use vim-extensions. if you want true vi-compatibility
     " remove change the following statements
-    set nocompatible        " Use Vim defaults instead of 100% vi compatibility
+    set nocompatible        " use vim defaults instead of 100% vi compatibility
     set backspace=2         " more powerful backspacing
 
-    " Don't write backup file if vim is being called by "crontab -e" 
-    au BufWrite /private/tmp/crontab.* set nowritebackup nobackup
+    " don't write backup file if vim is being called by "crontab -e" 
+    au bufwrite /private/tmp/crontab.* set nowritebackup nobackup
 
-    " Don't write backup file if vim is being called by "chpass"
-    au BufWrite /private/etc/pw.* set nowritebackup nobackup
+    " don't write backup file if vim is being called by "chpass"
+    au bufwrite /private/etc/pw.* set nowritebackup nobackup
 
-    " Skip loading default vim settings
+    " skip loading default vim settings
     let skip_defaults_vim=1
 
     ```
   
 - how to test whether the `.vimrc` file is configured correctly
-    > to append one statement shell command `echo "loaded .vimrc"` to the end of the content from this file, and then `save & exit`. When vim run again, the statement "loaded .vimrc" would be printed on the screen, which means this file previously added is successful, but if not, we need to check whether other problems exist.  
+    > to append one statement shell command `echo "loaded .vimrc"` to the end of the content from this file, and then `save & exit`. when vim run again, the statement "loaded .vimrc" would be printed on the screen, which means this file previously added is successful, but if not, we need to check whether other problems exist.  
 
 #### .viminfo
 
-this file is used to save state information between Vim sessions.
+this file is used to save state information between vim sessions.
 
 - case 1:
-  > when exiting Vim, the `marks` and `jumps` that you’ve created are lost. how shoudl we do?
+  > when exiting vim, the `marks` and `jumps` that you’ve created are lost. how shoudl we do?
 
-  answer: to save the `marks` you’ve created by making use of the `viminfo` file, which saves state information between Vim sessions.
+  answer: to save the `marks` you’ve created by making use of the `viminfo` file, which saves state information between vim sessions.
 
 **question**:
 
 1. this feature to save marks is not enabled when exiting vim, how to solve this?
-    > to append this statement `set viminfo='100,f1` to the .vimrc file. The '100 tells Vim to save marks and other information for up to 100 files. The f1 directive tells Vim to also save global marks (A-Z) when it exits. If you don’t want Vim to do this, set it to f0 instead.
+    > to append this statement `set viminfo='100,f1` to the .vimrc file. the '100 tells vim to save marks and other information for up to 100 files. the f1 directive tells vim to also save global marks (a-z) when it exits. if you don’t want vim to do this, set it to f0 instead.
 
 ### basic operation
 
 1. moving cursor operaiton
-   1. `h`,'j','k','l'
-   2. `w` and `b` moves the cursor forward or backward by one word, the cursor lies at the frist character of each word. `W` and `B` also like this. `e` and `ge`, `E` and `gE` are the same function as the command `w` and `b`, but the cursor lies at the last word of each word.
+   1. `h`,`j`,`k`,`l`
+   2. `w` and `b` moves the cursor forward or backward by one word, the cursor lies at the frist character of each word. `w` and `b` also like this. `e` and `ge`, `e` and `ge` are the same function as the command `w` and `b`, but the cursor lies at the last word of each word.
+      ```txt
+   	           ge      b	        w         		              e
+	           <-     <-	       --->			                 --->
+	    this is-a line, with special/separated/words (and some more). 
+	       <----- <-----	       -------------------->	     ----->
+	         gE      B			        W	          		    E
+
+      ```
    3. `0` and `^` move the cursor to the beginning of lines. `g_` and `$` move the cursor to the end of lines.
        - `0`: This command moves the cursor to the beginning of the line, including any leading whitespace (like spaces and tabs).
        - `^`: This command moves the cursor to the first non-blank character of the line.
+          ```txt
+       		          ^
+	             <------------
+	        .....This is a line with example text 
+	        <-----------------   --------------->
+		             0		           $
+          ```
+       
        - `g_`: moves the cursor to the last non-blank charcter of the line.
        - `$`: moves the cursor to the end of the line, including any leading whitespace (like spaces and tabs).
 2. return to the last position
 `
      - <u>``</u> (two backticks) or `‘’` (two apostrophes): These commands return the cursor to the exact spot or the start of the line of the last modification, respectively.
 
-     - `g;`: This command moves the cursor to the last change3.
-     - `Ctrl-o`: This command retraces your movements in the file backwards.
-     - `Ctrl-i`: This command retraces your movements in the file forwards.
+     - `g;`: This command moves the cursor to the last change.
+     - `Ctrl-o(O)`: This command retraces your movements in the file backwards.
+     - `Ctrl-i(I)`: This command retraces your movements in the file forwards.
 
 3. deleting text
 
@@ -108,6 +124,50 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - To repeat an operation you’ve just done use `.` in normal mode.
     - Example: If you enter insert mode and type “Vim is nifty” and then return to normal mode (Esc) and type `.` then Vim will repeat “Vim is nifty.”
     - These are usually modifiable. Let’s talk about that next.
+5. find a single character within a line.
+    ```txt
+    To err is human.  To really foul up you need a computer. 
+    ---------->--------------->
+	      fh	        fy
+    ```
+
+    `3fl` command, `3` means that moves to the third matched character from the current cursor in a line.
+    ```txt
+    To err is human.  To really foul up you need a computer. 
+		      --------------------->
+			             3fl
+    ```
+    ```txt
+    To err is human.  To really foul up you need a computer. 
+		      <---------------------
+			            Fh    
+    ```
+    `t` or `T` likes `f` or `F`. except it stops one character before the searched character. These four commands can be repeated with `;`. `,` repeats in the other direction.
+    ```txt
+    To err is human.  To really foul up you need a computer. 
+		       <------------  ------------->
+			        Th              tn
+    ```
+6. scrolling around
+
+- `ctrl b(B)` command
+- `ctrl u(U)` command
+- `ctrl d(D)` command
+- `ctrl f(F)` command
+- `ctrl e(E)` command, scrolling up line by line.
+- `ctrl y(Y)` command, scrolling down line by line.
+- `zz` command
+  ```txt
+	  +------------------+		     +------------------+
+	  | some text	       |		     | some text	    |
+	  | some text	       |		     | some text	    |
+	  | some text	       |		     | some text	    |
+	  | some text	       |   zz  -->	 | line with cursor |
+	  | some text	       |		     | some text	    |
+	  | some text	       |		     | some text	    |
+	  | line with cursor |		     | some text	    |
+	  +------------------+		     +------------------+
+  ```
 
 
 ### visual model
@@ -141,14 +201,17 @@ I will demonstrate selecting an individual character, selecting a few words, sel
 - **Buffers**: Manage multiple open files.
   - **Example**: :`e filename` to open a file, `:ls` to list open buffers, `:bN` to switch to buffer N.
 - **Windows** **`:Split`** the screen to view multiple files or parts of a file.
-  - Example: **`:split`** or **`:vsplit`** to split horizontally or vertically, **`Ctrl-w w`** to switch between windows.
+  - Example: **`:split`** or **`:vsplit`** to split horizontally or vertically, **`Ctrl-w w`** to switch between windows, **`ctrl-w o`** to close the current window.
 - Tabs: Organize windows into tabs.
   - Example: **`:tabnew filename`** to open a file in a new tab, **`gt`** to switch to the next tab, **`gT`** to switch to the previous tab.
 
 ### Search and Replace with Regular Expressions
 
 - **Search**: Press `/` to search forward and `?` to search backward.
-  - Example: **`/pattern`** to search for "pattern".
+  - Example: **`/pattern`** to search for "pattern", `\b` represents border, `\bword\b means that precisely matches the **word**.
+    ```vim
+    /\bword\b <=> /\<word\>
+    ```
 - **Advanced Search**: Use regular expressions to perform complex searches.
   - **Example**: **`/\v(pattern1|pattern2)`** to search for "pattern1" or "pattern2".
 - **Replace with Confirmation**: Use **`c`** to confirm each replacement.
@@ -193,7 +256,7 @@ I will demonstrate selecting an individual character, selecting a few words, sel
     ```
   
   - Use **`:Hello`** to call the custom function
-
+`
 ### Advanced Navigation
 
 - **Marks**: Set marks to jump between specific positions.
@@ -321,7 +384,7 @@ Those marks in the table above are present whether you’ve set any marks manual
         - press `j` to move to the next line;
         - press `dd` to delete the line;
         - press `j` to move to the next line.
-    3. Stop Recording:
+    3. Stop Recording:(fdl (f j k e z)jlda)
 
         - Press q to stop recording.
     4. Replay the Macro:
