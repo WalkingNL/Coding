@@ -59,7 +59,7 @@ this file is used to save state information between vim sessions.
 
 ### basic operation
 
-1. moving cursor operaiton
+#### moving cursor operaiton
    1. `h`,`j`,`k`,`l`
    2. `w` and `b` moves the cursor forward or backward by one word, the cursor lies at the frist character of each word. `w` and `b` also like this. `e` and `ge`, `e` and `ge` are the same function as the command `w` and `b`, but the cursor lies at the last word of each word.
       ```txt
@@ -83,7 +83,7 @@ this file is used to save state information between vim sessions.
        
        - `g_`: moves the cursor to the last non-blank charcter of the line.
        - `$`: moves the cursor to the end of the line, including any leading whitespace (like spaces and tabs).
-2. return to the last position
+#### return to the last position
 `
      - <u>``</u> (two backticks) or `‘’` (two apostrophes): These commands return the cursor to the exact spot or the start of the line of the last modification, respectively.
 
@@ -91,32 +91,101 @@ this file is used to save state information between vim sessions.
      - `Ctrl-o(O)`: This command retraces your movements in the file backwards.
      - `Ctrl-i(I)`: This command retraces your movements in the file forwards.
 
-3. deleting text
+#### deleting, inserting, replacing operation
 
-    - `x` will delete a character under the cursor
-    - `d` can be used to delete larger selections of text
-      - `d3l` will delete 3 characters to the right
-        - Note that we’re combining an operation, a movement, and a count here
-      - `d4h` will delete 4 characters to the left
-      - `dd` will delete a single line
-      - `d$` or `D` will delete content from the cursor to the end of the line
-      - `d0` will delete from the cursor to the start of the line
-    - `:7,10d` will delete lines 7 to 10 in command mode
-      - `7,10` is a “range”
-    - `a`: enter the insert mode at the next position.
-    - `A`: enter the insert mode at the end of a line.
-    - `s`: delete the current character under the cursor and enter the insert mode.
-    - `S`: delete the current line and enter the insert mode.
-    - `i`: enter the insert mode at the cursor.
-    - `I`: enter insert mode at the beginning of the current line.
-    - `o`: enter the insert mode at the next line.
-    - `O`: enter the insert mode at the previous line.
-    - `c`: is used to delete the current selection and enter the insert mode that `c` can be used with other motion.
-      - `cw` or `cb`: delete the current or next or previous word and then enter the insert mode.
+- deleting
+
+  - `x` will delete a character under the cursor
+  - `d` can be used to delete larger selections of text
+    - `d3l` will delete 3 characters to the right
+      - Note that we’re combining an operation, a movement, and a count here
+    - `d4h` will delete 4 characters to the left
+    - `dd` will delete a single line
+    - `d$` or `D` will delete content from the cursor to the end of the line
+    - `d0` will delete from the cursor to the start of the line
+  - `:7,10d` will delete lines 7 to 10 in command mode
+    - `7,10` is a “range”
+  - `a`: enter the insert mode at the next position.
+  - `A`: enter the insert mode at the end of a line.
+  - `s`: delete the current character under the cursor and enter the insert mode.
+  - `S`: delete the current line and enter the insert mode.
+  - `i`: enter the insert mode at the cursor.
+  - `I`: enter insert mode at the beginning of the current line.
+  - `o`: enter the insert mode at the next line.
+  - `O`: enter the insert mode at the previous line.
+  - `c`: is used to delete the current selection and enter the insert mode that `c` can be used with other motion.
+    - `cw` or `cb`: delete the current or next or previous word and then enter the insert mode.
       - `cc`, delete a whole line and then enter the insert mode.
-      - `c$` or C, delete the content from the current cursor to the end of the line, and then enter the insert mode.
-      - `ci(` or `ci)`, delete the content within a `()` which is next to the cursor and then enter the insert mode. `ci[` or `ci]`, `ci{` or `ci} do the same way.
-4. Undo, Redo and Repeat
+    - `c$` or C, delete the content from the current cursor to the end of the line, and then enter the insert mode.
+    - `ci(` or `ci)`, delete the content within a `()` which is next to the cursor and then enter the insert mode. `ci[` or `ci]`, `ci{` or `ci} do the same way.
+- inserting
+- replacing
+  - `r`, only replace one character and exit the replacing mode
+  - `R`, Enter Replace mode: Each character you type replaces an existing character, starting with the character under the cursor.  Repeat the entered text [count]-1 times.
+  - `gr`, Replace the virtual characters under the cursor with {char}.  This replaces in screen space, not file space.
+  - `gR`, Enter Virtual Replace mode: Each character you type replaces existing characters in screen space.  So a <Tab> may replace several characters at once. Repeat the entered text [count]-1 times.
+
+- swiching upper(lower)case
+  - `~` 'notildeop' option: Switch case of the character under the cursor and move the cursor to the right. If a [count] is given, do that many characters. {Vi: no count}
+
+    ```vim
+    ~, switch case at a character each time 
+
+    [number]~, change the case right to number-1 position each time 
+    ```
+
+  - `~{motion}` 'tildeop' option: switch case of {motion} text.
+
+  - `g~{motion}` Switch case of {motion} text. {not in Vi}
+    - `g~iw`, this will change the case of the entire word of the cursor
+
+  - `g~g~` or `g~~`, Switch case of current line. {not in Vi}.
+
+  - `{Visual}~` Switch case of highlighted text. {not in Vi}
+
+  - `{Visual}U` Make highlighted text uppercase {not in Vi}
+
+  - `gU{motion}` Make {motion} text uppercase. {not in Vi}
+  
+      Example:
+
+      ```vim
+        :map! <C-F> <Esc>gUiw`]a
+      ```
+
+      This works in Insert mode: press CTRL-F to make the word before the cursor uppercase.  Handy to type words in lowercase and then make them uppercase.
+
+  - `gUgU` and `gUU`, Make current line uppercase. {not in Vi}.
+
+  - `{Visual}u` Make highlighted text lowercase {not in Vi}
+
+  - `gu{motion}` Make {motion} text lowercase. {not in Vi}
+
+  - `gugu` and `guu`, Make current line lowercase. {not in Vi}.
+
+  - `g?{motion}` Rot13 encode {motion} text. {not in Vi}
+
+  - `{Visual}g?` Rot13 encode the highlighted text.  {not in Vi}
+
+  - `g?g?` and `g??`, Rot13 encode current line. {not in Vi}.
+
+  To turn one line into title caps, make every first letter of a word
+uppercase:
+
+  ```vim
+  :s/\v<(.)(\w*)/\u\1\L\2/g
+  ```
+
+  > - `\v`: Enables 'very magic' mode, which makes the regular expression syntax more concise by reducing the need for backslashes.
+  > - `<`: This matches the beginning of a word. In Vim, < is a zero-width assertion that matches the position where a word starts.
+  > - `.`: This matches any single character except a newline.
+  > - `(\w*)`: This is a capturing group that matches zero or more word characters. \w matches any word character (equivalent to [a-zA-Z0-9_]), and * means "zero or more" of the preceding character or group.
+  > - `\u\1`: Converts the first captured group (the single character) to uppercase. `u` refers to uppercase. using lowercase `u` represents converting the matched lowercase characters to uppercase, if the matched characters are uppercase, it does nothing.
+  > - `\L\2`: Converts the second captured group (the rest of the word) to lowercase. `L` refers to lowercase. using uppercase `L` represents converting the matched uppercase characters to lowercase, if the matched characters are lowercase, it does nothing.
+  > - `g`: Global flag, meaning it will apply the substitution to all matches in each line.
+
+
+#### Undo, Redo and Repeat
 Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - Vim knows we do awesome work, and it’s happy to help us repeat it!
     - To undo the last operation (we won’t say “mistake”) type u in normal mode.
@@ -124,7 +193,7 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - To repeat an operation you’ve just done use `.` in normal mode.
     - Example: If you enter insert mode and type “Vim is nifty” and then return to normal mode (Esc) and type `.` then Vim will repeat “Vim is nifty.”
     - These are usually modifiable. Let’s talk about that next.
-5. find a single character within a line.
+#### find a single character within a line.
     ```txt
     To err is human.  To really foul up you need a computer. 
     ---------->--------------->
@@ -148,7 +217,7 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
 		       <------------  ------------->
 			        Th              tn
     ```
-6. scrolling around
+#### scrolling around
 
 - `ctrl b(B)` command
 - `ctrl u(U)` command
@@ -169,8 +238,79 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
 	  +------------------+		     +------------------+
   ```
 
+#### merging lines
 
-### visual model
+- `J` and `gJ`, merging multiple lines into one line. The difference is that using `J` command would append the back lines of the cursor to the end of the current line and add (one or two) space(s) between two lines merged, but using `gJ` command would not addd any space between the two merged lines.
+- `:[range]j`, joining a range of lines.
+
+  ```vim
+  :j(oin), joining two lines (including the current line)
+  :3j, joining three lines (including the current line) into one line with two modifying spaces
+  :15,17j, specifying a range of lines and joining with one (or two) modifying spaces
+  :15,17j!, ! means without any modifying spaces added.
+  ```
+#### Adding and subtracting
+- `Ctrl-A(a)`, adding 1 on a number at cursor.
+- `Ctrl-X(x))`, subtracting 1 on a number at cursor.
+
+#### SHIFTING LINES LEFT OR RIGHT
+- `{Visual} <(>) {motion}`
+- `{Visual} <<(>>)`
+- commanding line in Vim
+  - `:[range]<` Shift [range] lines one 'shiftwidth' left.  Repeat `<` for shifting multiple 'shiftwidth's.
+
+  - `:[range]< {count}` Shift {count} lines one 'shiftwidth' left, starting with [range] (default current line |cmdline-ranges|). Repeat `<` for shifting multiple 'shiftwidth's.
+
+  - `:[range]le[ft] [indent]` left align lines in [range]. Sets the indent in the lines to [indent] (default 0).
+
+  - `:[range]> [flags]` Shift {count} [range] lines one 'shiftwidth' right. Repeat `>` for shifting multiple 'shiftwidth's. See |ex-flags| for [flags].
+
+  - `:[range]> {count} [flags]` Shift {count} lines one 'shiftwidth' right, starting with [range] (default current line |cmdline-ranges|). Repeat `>` for shifting multiple 'shiftwidth's. See |ex-flags| for [flags].
+
+### advanced operation
+
+- the fold function in vim
+
+  - basic commands:
+
+    - `zf` or `zF`, like `zf10j` or `zf10k`,
+    - `zo`, open the fold. Open one fold under the cursor.  When a count is given, that many folds deep will be opened. In Visual mode one level of folds is opened for all lines in the selected area.
+    - `zO`, Open all folds under the cursor recursively. Folds that don't contain the cursor line are unchanged. In Visual mode it opens all folds that are in the selected area, also those that are only partly selected.
+    - `zc`, Close one fold under the cursor.  When a count is given, that many folds deep are closed.  In Visual mode one level of folds is closed for all lines in the selected area. 'foldenable' will be set.
+    - `zC`, Close all folds under the cursor recursively.  Folds that don't contain the cursor line are unchanged. In Visual mode it closes all folds that are in the selected area, also those that are only partly selected. 'foldenable' will be set.
+    - `za`, When on a closed fold: open it.  When folds are nested, you may have to use "za" several times.  When a count is given, that many closed folds are opened. When on an open fold: close it and set 'foldenable'.  This will only close one level, since using "za" again will open the fold.  When a count is given that many folds will be closed (that's not the same as repeating "za" that many times).
+    - `zA`, When on a closed fold: open it recursively. When on an open fold: close it recursively and set 'foldenable'.
+    - `zd`, delete the fold under the cursor. Delete one fold at the cursor. When the cursor is on a folded line, that fold is deleted.  Nested folds are moved one level up.  In Visual mode all folds (partially) in the selected area are deleted.  Careful: This easily deletes more folds than you expect and there is no undo. This only works when 'foldmethod' is "manual" or "marker". Also see |fold-delete-marker|.
+    - `zD`, Delete folds recursively at the cursor.  In Visual mode all folds (partially) in the selected area and all nested folds in them are deleted. This only works when 'foldmethod' is "manual" or "marker". Also see |fold-delete-marker|.
+    - `zE`, eliminate all the fold in the window.
+    - `]z`, Move to the end of the current open fold.  If already at the end, move to the end of the fold that contains it.  If there is no containing fold, the command fails. When a count is used, repeats the command [count] times.
+    - `[z`, Move to the start of the current open fold.  If already at the start, move to the start of the fold that contains it.  If there is no containing fold, the command fails. When a count is used, repeats the command [count] times.
+    - `zj(k)`, moving down(up) to the start of the next fold.
+    - `fold`, like `:10,20fold`
+- recording in vim
+  ```txt
+  a) the scenery of Chang'an is in my memory.
+  b) the scenery of Chang'an is in my memory.
+  c) the scenery of Chang'an is in my memory.
+  d) the scenery of Chang'an is in my memory.
+  e) the scenery of Chang'an is in my memory.
+  f) the scenery of Chang'an is in my memory.
+  g) the scenery of Chang'an is in my memory.
+  h) the scenery of Chang'an is in my memory.
+  i) the scenery of Chang'an is in my memory.
+  j) the scenery of Chang'an is in my memory.
+  ```
+  to auto-increment the list number in recording in Vim.
+  1. check the `nrformats` option whether supports the alpha self-incrementing. If doesn't, we need to append `alpha` value to this option in ~/.vimrc file, and then judge if it works with command: `set nrformats?`. 
+  2. `qa`, enter the recording state.
+  3. `Y`, copy the first line.
+  4. `p`, paste.
+  5. `Ctrl-A`, self-incrementing.
+  6. `q`, quiting the recording state.
+  7. `9@a`, replaying a, which would repeat the yank process and increment 9 times.
+
+
+### visual mod
 
 Visual [Character] mode: Used for selecting individual characters.          [press v]
 Visual Line mode: Used for selecting a whole line at once                   [press V]
@@ -361,6 +501,7 @@ Those marks in the table above are present whether you’ve set any marks manual
     3. Exceptions:
 
        - The _ (black hole) register: Text deleted with "_dd does not update the unnamed register or any other register.
+
   - other classes refer to [here](https://vimdoc.sourceforge.net/htmldoc/change.html#registers)
 
 - **Macros**: Record a sequence of commands for repeated use.
