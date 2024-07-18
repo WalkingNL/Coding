@@ -249,11 +249,14 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
   :15,17j, specifying a range of lines and joining with one (or two) modifying spaces
   :15,17j!, ! means without any modifying spaces added.
   ```
+
 #### Adding and subtracting
+
 - `Ctrl-A(a)`, adding 1 on a number at cursor.
 - `Ctrl-X(x))`, subtracting 1 on a number at cursor.
 
 #### SHIFTING LINES LEFT OR RIGHT
+
 - `{Visual} <(>) {motion}`
 - `{Visual} <<(>>)`
 - commanding line in Vim
@@ -288,6 +291,7 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - `zj(k)`, moving down(up) to the start of the next fold.
     - `fold`, like `:10,20fold`
 - recording in vim
+
   ```txt
   a) the scenery of Chang'an is in my memory.
   b) the scenery of Chang'an is in my memory.
@@ -300,8 +304,9 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
   i) the scenery of Chang'an is in my memory.
   j) the scenery of Chang'an is in my memory.
   ```
+  
   to auto-increment the list number in recording in Vim.
-  1. check the `nrformats` option whether supports the alpha self-incrementing. If doesn't, we need to append `alpha` value to this option in ~/.vimrc file, and then judge if it works with command: `set nrformats?`. 
+  1. check the `nrformats` option whether supports the alpha self-incrementing. If doesn't, we need to append `alpha` value to this option in ~/.vimrc file, and then judge if it works with command: `set nrformats?`.
   2. `qa`, enter the recording state.
   3. `Y`, copy the first line.
   4. `p`, paste.
@@ -309,6 +314,45 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
   6. `q`, quiting the recording state.
   7. `9@a`, replaying a, which would repeat the yank process and increment 9 times.
 
+- diffs between files
+  - basic commands
+    - `vimdiff [-o] file1 file2 ...` or `vim -d[o] file1 file2 ...` or `:[vert] diffsplit file_cmp` or `diffthis`
+
+        how to use `diffthis` command in Vim
+  
+        1. `:vsplit` to split vertically the current window and open the compared file.
+        2. using `:diffthis` command in both window
+
+    - `]c` and `[c`, jump forwards to the next start of a change.
+    - `[c`, jump backwards to the previous start of a change.
+  - view diffs
+    - `wrap`
+    - `scrollbind`
+    - `folds`
+    - "filler"
+  - merging files commands
+  
+    There are two commands to copy text from one buffer to another.  The result is
+that the buffers will be equal within the specified range.
+    - `[range] diffget(diffg, do) [bufspec]`, Used to apply changes from another buffer to the current buffer. This is useful when you want to accept changes from another version of a file into your current working file.
+    - `[range] diffput(diffpu, dp) [bufspec]`, Used to apply changes from the current buffer to another buffer. This is useful when you want to push your changes to another version of the file.
+
+      ```vim
+      diffput 2
+      ```
+
+      no range is specified, but the bufspec is 2, which is that using buf 2 to override the current.
+
+    - other
+
+      ```vim
+      diff file1 file2 > output
+      patch -o outfile origfile < patchfile
+      ```
+
+  - using autocmd
+
+    - `:au[tocmd] [group] {event} {pat} [nested] {cmd}`, Add {cmd} to the list of commands that Vim will execute automatically on {event} for a file matching {pat} |autocmd-patterns|. Vim always adds the {cmd} after existing autocommands, so that the autocommands execute in the order in which they were given.
 
 ### visual mod
 
@@ -349,9 +393,11 @@ I will demonstrate selecting an individual character, selecting a few words, sel
 
 - **Search**: Press `/` to search forward and `?` to search backward.
   - Example: **`/pattern`** to search for "pattern", `\b` represents border, `\bword\b means that precisely matches the **word**.
+  
     ```vim
     /\bword\b <=> /\<word\>
     ```
+  
 - **Advanced Search**: Use regular expressions to perform complex searches.
   - **Example**: **`/\v(pattern1|pattern2)`** to search for "pattern1" or "pattern2".
 - **Replace with Confirmation**: Use **`c`** to confirm each replacement.
@@ -396,7 +442,7 @@ I will demonstrate selecting an individual character, selecting a few words, sel
     ```
   
   - Use **`:Hello`** to call the custom function
-`
+
 ### Advanced Navigation
 
 - **Marks**: Set marks to jump between specific positions.
