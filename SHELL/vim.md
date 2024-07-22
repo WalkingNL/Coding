@@ -57,9 +57,53 @@ this file is used to save state information between vim sessions.
 1. this feature to save marks is not enabled when exiting vim, how to solve this?
     > to append this statement `set viminfo='100,f1` to the .vimrc file. the '100 tells vim to save marks and other information for up to 100 files. the f1 directive tells vim to also save global marks (a-z) when it exits. if you don’t want vim to do this, set it to f0 instead.
 
+#### vim mode introduction
+
+||**normal**|**insert**|**visual**|**select**|**replace**|**command-line**|**Ex**|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|**normal**||(1)|v,V,^V|(4)|R,gR|: / ? !|Q|
+|**insert**|\<Esc\>||--|--|\<Insert\>|--|--|
+|**visual**|(2)|c,C||^G|--|:|--|
+|**select**|(5)|(6)|^O,^G ||--|--|--|
+|**replace**|\<Esc\>|\<Insert\>|--|--||--|--|
+|**command-line**|(3)|:start|--|--|--||--|
+|**Ex**|:vi(sual)|--|--|--|--|--||
+
+-- not possible
+
+(1) Go from Normal mode to Insert mode by giving the command "i", "I", "a",
+   "A", "o", "O", "c{motion}", "C", "s" or S".
+
+(2) Go from Visual mode to Normal mode by giving a non-movement command, which
+   causes the command to be executed, or by hitting \<Esc\> "v", "V" or "CTRL-V"
+   (see |v_v|), which just stops Visual mode without side effects.
+
+(3) Go from Command-line mode to Normal mode by:
+
+- Hitting \<CR\> or \<NL\>, which causes the entered command to be executed.
+- Deleting the complete line (e.g., with CTRL-U) and giving a final \<BS\>.
+- Hitting CTRL-C or \<Esc\>, which quits the command-line without executing the command.
+  
+In the last case \<Esc\> may be the character defined with the 'wildchar' option, in which case it will start command-line completion. You can ignore that and type \<Esc\> again. {Vi: when hitting \<Esc\> the command-line is executed. This is unexpected for most people; therefore it was changed in Vim. But when the \<Esc\> is part of a mapping, the command-line is executed. If you want the Vi behaviour also when typing \<Esc\>, use ":cmap ^V\<Esc\> ^V^M"}
+
+(4) Go from **Normal** to **Select** mode by:
+
+- use the mouse to select text while 'selectmode' contains "mouse"
+- use a non-printable command to move the cursor while keeping the Shift key pressed, and the 'selectmode' option contains "key"
+- use "v", "V" or "CTRL-V" while 'selectmode' contains "cmd"
+- use "gh", "gH" or "g CTRL-H"  |g_CTRL-H|
+
+(5) Go from Select mode to Normal mode by using a non-printable command to move
+   the cursor, without keeping the Shift key pressed.
+
+(6) Go from Select mode to Insert mode by typing a printable character. The selection is deleted and the character is inserted.
+
+If the 'insertmode' option is on, editing a file will start in Insert mode.
+
 ### basic operation
 
 #### moving cursor operaiton
+
    1. `h`,`j`,`k`,`l`
    2. `w` and `b` moves the cursor forward or backward by one word, the cursor lies at the frist character of each word. `w` and `b` also like this. `e` and `ge`, `e` and `ge` are the same function as the command `w` and `b`, but the cursor lies at the last word of each word.
       ```txt
@@ -70,6 +114,7 @@ this file is used to save state information between vim sessions.
 	         gE      B			        W	          		    E
 
       ```
+
    3. `0` and `^` move the cursor to the beginning of lines. `g_` and `$` move the cursor to the end of lines.
        - `0`: This command moves the cursor to the beginning of the line, including any leading whitespace (like spaces and tabs).
        - `^`: This command moves the cursor to the first non-blank character of the line.
@@ -80,16 +125,19 @@ this file is used to save state information between vim sessions.
 	        <-----------------   --------------->
 		             0		           $
           ```
-       
+
        - `g_`: moves the cursor to the last non-blank charcter of the line.
        - `$`: moves the cursor to the end of the line, including any leading whitespace (like spaces and tabs).
-#### return to the last position
-`
-     - <u>``</u> (two backticks) or `‘’` (two apostrophes): These commands return the cursor to the exact spot or the start of the line of the last modification, respectively.
 
-     - `g;`: This command moves the cursor to the last change.
-     - `Ctrl-o(O)`: This command retraces your movements in the file backwards.
-     - `Ctrl-i(I)`: This command retraces your movements in the file forwards.
+#### return to the last position
+
+- <Element: u>``</u> (two backticks) or `‘’` (two apostrophes): These commands return the cursor to the exact spot or the start of the line of the last modification, respectively.
+
+- `g;`: This command moves the cursor to the last change.
+
+- `Ctrl-o(O)`: This command retraces your movements in the file backwards.
+
+- `Ctrl-i(I)`: This command retraces your movements in the file forwards.
 
 #### deleting, inserting, replacing operation
 
@@ -110,7 +158,9 @@ this file is used to save state information between vim sessions.
   - `s`: delete the current character under the cursor and enter the insert mode.
   - `S`: delete the current line and enter the insert mode.
   - `i`: enter the insert mode at the cursor.
+  - `gi`: enter the insert mode from the end of the last insert mode
   - `I`: enter insert mode at the beginning of the current line.
+  - `gI`:
   - `o`: enter the insert mode at the next line.
   - `O`: enter the insert mode at the previous line.
   - `c`: is used to delete the current selection and enter the insert mode that `c` can be used with other motion.
@@ -123,7 +173,10 @@ this file is used to save state information between vim sessions.
   - `r`, only replace one character and exit the replacing mode
   - `R`, Enter Replace mode: Each character you type replaces an existing character, starting with the character under the cursor.  Repeat the entered text [count]-1 times.
   - `gr`, Replace the virtual characters under the cursor with {char}.  This replaces in screen space, not file space.
-  - `gR`, Enter Virtual Replace mode: Each character you type replaces existing characters in screen space.  So a <Tab> may replace several characters at once. Repeat the entered text [count]-1 times.
+  - `gR`, Enter Virtual Replace mode: Each character you type replaces existing characters in screen space.  So a `<Tab>` may replace several characters at once. Repeat the entered text [count]-1 times.
+- visual mode
+  - `v`,`V`,`^v(V)`
+  - `gv`, enter the visual mode, and select the same text as the last in visual mode.
 
 - swiching upper(lower)case
   - `~` 'notildeop' option: Switch case of the character under the cursor and move the cursor to the right. If a [count] is given, do that many characters. {Vi: no count}
@@ -184,8 +237,8 @@ uppercase:
   > - `\L\2`: Converts the second captured group (the rest of the word) to lowercase. `L` refers to lowercase. using uppercase `L` represents converting the matched uppercase characters to lowercase, if the matched characters are lowercase, it does nothing.
   > - `g`: Global flag, meaning it will apply the substitution to all matches in each line.
 
-
 #### Undo, Redo and Repeat
+
 Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - Vim knows we do awesome work, and it’s happy to help us repeat it!
     - To undo the last operation (we won’t say “mistake”) type u in normal mode.
@@ -193,30 +246,37 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
     - To repeat an operation you’ve just done use `.` in normal mode.
     - Example: If you enter insert mode and type “Vim is nifty” and then return to normal mode (Esc) and type `.` then Vim will repeat “Vim is nifty.”
     - These are usually modifiable. Let’s talk about that next.
-#### find a single character within a line.
-    ```txt
-    To err is human.  To really foul up you need a computer. 
-    ---------->--------------->
-	      fh	        fy
-    ```
 
-    `3fl` command, `3` means that moves to the third matched character from the current cursor in a line.
-    ```txt
-    To err is human.  To really foul up you need a computer. 
-		      --------------------->
-			             3fl
-    ```
-    ```txt
-    To err is human.  To really foul up you need a computer. 
-		      <---------------------
-			            Fh    
-    ```
-    `t` or `T` likes `f` or `F`. except it stops one character before the searched character. These four commands can be repeated with `;`. `,` repeats in the other direction.
-    ```txt
-    To err is human.  To really foul up you need a computer. 
-		       <------------  ------------->
-			        Th              tn
-    ```
+#### find a single character within a line
+
+  ```txt
+  To err is human.  To really foul up you need a computer. 
+  ---------->--------------->
+      fh	        fy
+  ```
+
+`3fl` command, `3` means that moves to the third matched character from the current cursor in a line.
+
+  ```txt
+  To err is human.  To really foul up you need a computer. 
+        --------------------->
+                  3fl
+  ```
+
+  ```txt
+  To err is human.  To really foul up you need a computer. 
+        <---------------------
+                Fh    
+  ```
+
+  `t` or `T` likes `f` or `F`. except it stops one character before the searched character. These four commands can be repeated with `;`. `,` repeats in the other direction.
+
+  ```txt
+  To err is human.  To really foul up you need a computer. 
+          <------------  ------------->
+            Th              tn
+  ```
+
 #### scrolling around
 
 - `ctrl b(B)` command
@@ -226,6 +286,7 @@ Vim knows we’re going to make mistakes, and it’s happy to bail us out!
 - `ctrl e(E)` command, scrolling up line by line.
 - `ctrl y(Y)` command, scrolling down line by line.
 - `zz` command
+
   ```txt
 	  +------------------+		     +------------------+
 	  | some text	       |		     | some text	    |
@@ -546,7 +607,7 @@ Those marks in the table above are present whether you’ve set any marks manual
        - When using the p or P commands to paste, Vim uses the unnamed register by default if no specific register is specified.
     3. Exceptions:
 
-       - The _ (black hole) register: Text deleted with "_dd does not update the unnamed register or any other register.
+       - The `_` (black hole) register: Text deleted with "_dd does not update the unnamed register or any other register.
 
   - other classes refer to [here](https://vimdoc.sourceforge.net/htmldoc/change.html#registers)
 
@@ -578,37 +639,42 @@ Those marks in the table above are present whether you’ve set any marks manual
 
         - press `gg` to Move to the top of the file
         - Press `@a` to replay the macro. This will move to the next line, delete it, and move to the next line again.
-    
+
     Example 2: Applying a Macro Multiple Times
-    1. Replay the Macro Multiple Times:
+    5. Replay the Macro Multiple Times:
          - You can replay the macro multiple times by specifying a count before `@`.
          - For example, to replay the macro stored in register `a` 3 times, press `3@a`.
-    
-    **Example Workflow**
-    1. Open a file in Vim:
 
-        ```shell
-        vim example.txt
-        ```
-    2. Start Recording into Register a:
+    **Example Workflow**
+  
+    6. Open a file in Vim:
+
+      ```shell
+      vim example.txt
+      ```
+
+    7. Start Recording into Register a:
 
         ```vim
         qa
         ```
-    3. Perform the Commands:
+
+    8. Perform the Commands:
 
         - press `j` (move to the next line)
         - press `dd`  (delete the current line)
         - press `j` (move to the next line)
-    4. Stop Recording:
+
+    9. Stop Recording:
 
         ```vim
         q
         ```
-    5. Replay the Macro:
 
-       - Press `gg` to move to the top of the file.
-       - Press `@a` to replay the macro once, or `3@a` to replay it three times.
+    10. Replay the Macro:
+
+    - Press `gg` to move to the top of the file.
+    - Press `@a` to replay the macro once, or `3@a` to replay it three times.
 
 ---
 
@@ -624,4 +690,4 @@ Those marks in the table above are present whether you’ve set any marks manual
   set statusline=%F
   ```
   
-The %F will be replaced with the full path to the current file
+The %F will be replaced with the full path to the current file.
