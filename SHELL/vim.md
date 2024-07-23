@@ -411,10 +411,6 @@ that the buffers will be equal within the specified range.
       patch -o outfile origfile < patchfile
       ```
 
-  - using autocmd
-
-    - `:au[tocmd] [group] {event} {pat} [nested] {cmd}`, Add {cmd} to the list of commands that Vim will execute automatically on {event} for a file matching {pat} |autocmd-patterns|. Vim always adds the {cmd} after existing autocommands, so that the autocommands execute in the order in which they were given.
-
 ### visual mod
 
 Visual [Character] mode: Used for selecting individual characters.          [press v]
@@ -446,9 +442,16 @@ I will demonstrate selecting an individual character, selecting a few words, sel
 - **Buffers**: Manage multiple open files.
   - **Example**: :`e filename` to open a file, `:ls` to list open buffers, `:bN` to switch to buffer N.
 - **Windows** **`:Split`** the screen to view multiple files or parts of a file.
-  - Example: **`:split`** or **`:vsplit`** to split horizontally or vertically, **`Ctrl-w w`** to switch between windows, **`ctrl-w o`** to close the current window.
+  - Command: **`:split`** or **`:vsplit`** to split horizontally or vertically, **`Ctrl-w w`** to switch between windows, **`ctrl-w o`** to close the current window.
+  - command2: `vim -o(O) file1 file2 file3`, `-o` spliting window horizontally, `-O` splitting window vertically.
 - Tabs: Organize windows into tabs.
   - Example: **`:tabnew filename`** to open a file in a new tab, **`gt`** to switch to the next tab, **`gT`** to switch to the previous tab.
+  - `:vsplit file4`: Open file4 in a new vertical split.
+  - `:split file4`: Open file4 in a new horizontal split.
+  - `:close`: Close the current split.
+  - `:only`: Close all splits except the current one.
+  - `:new file4`: Open a new horizontal split with file4.
+  - `:vnew file4`: Open a new vertical split with file4.
 
 ### Search and Replace with Regular Expressions
 
@@ -486,7 +489,31 @@ I will demonstrate selecting an individual character, selecting a few words, sel
 ### Autocommands and Filetype Plugins
 
 - **Autocommands**: Execute commands automatically in response to events.
-  - **Example**: **`:autocmd BufRead,BufNewFile *.md set filetype=markdown`** to set the file type to Markdown for **`.md`** files.
+
+  - `:au[tocmd] [group] {event} {pat} [nested] {cmd}`, Add {cmd} to the list of commands that Vim will execute automatically on {event} for a file matching {pat} |autocmd-patterns|. Vim always adds the {cmd} after existing autocommands, so that the autocommands execute in the order in which they were given.
+  - how to trigger autocmd commands in Vim
+    1. triggering automatically according to the specific events, like `BufRead`, `BufWrite` etc.
+    2. triggering manually, like: `:doautocmd BufRead`
+  - Examples:
+    - Example1: **`:autocmd BufRead,BufNewFile *.md set filetype=markdown`** to set the file type to Markdown for **`.md`** files.
+    - Example2:
+
+      ```vim
+      " Define some BufRead actions for .txt files
+      autocmd BufRead *.txt echo "Reading a .txt file"
+      ```
+
+      This command is written into `.vimrc` file. There are at least two ways to trigger it. (1), it will be triggered when a .txt file is opened; (2), using command `:doautocmd BufRead` in command line of Vim
+  - `autogroup`, The {group} item in previous description is used when defining an autocommand, groups related autocommands together. This can be used to delete all the autocommands in a certain group.
+    - examples
+      ```vim
+      " c & cpp files
+      augroup cprograms
+        autocmd BufReadPost *.c,*.h :set sw=4 sts=4
+        autocmd BufReadPost *.cpp   :set sw=3 sts=3
+      augroup END
+      ```
+
 - **Filetype Plugins**: Enable filetype-specific settings and plugins.
   - **Example**: **`filetype plugin on`** in your **`.vimrc`**.
 
