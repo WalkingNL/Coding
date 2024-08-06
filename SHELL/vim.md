@@ -167,7 +167,7 @@ If the 'insertmode' option is on, editing a file will start in Insert mode.
     - `cw` or `cb`: delete the current or next or previous word and then enter the insert mode.
       - `cc`, delete a whole line and then enter the insert mode.
     - `c$` or C, delete the content from the current cursor to the end of the line, and then enter the insert mode.
-    - `ci(` or `ci)`, delete the content within a `()` which is next to the cursor and then enter the insert mode. `ci[` or `ci]`, `ci{` or `ci} do the same way.
+    - `ci(` or `ci)`, delete the content within a `()` which is next to the cursor and then enter the insert mode. `ci[` or `ci]`, `ci{` or `ci}` do the same way.
 - inserting
 - replacing
   - `r`, only replace one character and exit the replacing mode
@@ -411,6 +411,147 @@ that the buffers will be equal within the specified range.
       patch -o outfile origfile < patchfile
       ```
 
+#### Mapping
+
+- command-line commands mapping
+  - adding commands
+    - to specify 0 argument. like `:command del_specific_lines 5,10delete`, to delete 5-10 lines in a file.
+    - to specify arguments, `command -nargs=0 DeleteFirst 1delete`
+
+      ```vim
+      -nargs=0, No arguments
+      -nargs=1, One argument
+      -nargs=*, Any number of arguments
+      -nargs=?, Zero or one argument
+      -nargs=+, One or more arguments
+      ```
+
+      example1, to use "\<args\>", `:command -nargs=+ Say :echo "<args>"`
+
+      example2, to use \<q-args\>, `:command -nargs=+ Say: echo <q-args>`
+
+      example3, to use \<f-args\>, `:command -nargs=* DoIt :call AFunction(<f-args>)`, to verify: `:DoIt a b c`
+
+    - to specify line range, `:command -range=% SaveIt :<line1>,<line2>write! save_file`
+  - deleting commands
+    - `:delcommand command_name`, like `:delcommand SaveIt`
+    - `:comclear`, to delete all the user commands
+- key mapping
+
+  to map a shorcut key to a command or any composition of more than one commands in command line, and then use the shortcut key in appropriate modes to execute quickly the corresponding function.
+  
+  ```txt
+  :map ormal, Visual and Operator-pending
+  :vmap Visual
+  :nmap Normal
+  :omap Operator-pending
+  :map! Insert and Command-line
+  :imap Insert
+  :cmap Command-line
+  ```
+
+  example1:
+
+  ```vim
+  :map <F2> <CR>Date: <Esc>:read !date<CR>kJ
+  ```
+
+  it's effective in Normal, Visual and Operating-pending mode.
+
+  - LISTING MAPPINGS
+
+    ```vim
+      _g         :call MyGrep(1)<CR> 
+    v <F2>       :s/^/> /<CR>:noh<CR>`` 
+    n <F2>       :.,$s/^/> /<CR>:noh<CR>`` 
+      <xHome>    <Home>
+      <xEnd>     <End>
+    ```
+
+    The first column of the list shows in which mode the mapping is effective. This is `n` for Normal mode, `i` for Insert mode, `v` for visual mode, etc.  A `blank` is used for a mapping defined with `:map`, thus effective in both Normal and Visual mode. One useful purpose of listing the mapping is to check if special keys in `<>` form have been recognized (this only works when color is supported). For example, when `<Esc>` is displayed in color, it stands for the escape character. When it has the same color as the other text, it is five characters.
+
+  - REMAPPING
+
+    The result of a mapping is inspected for other mappings in it. For example, the mappings for \<F2\> above could be shortened to:
+
+      ```vim
+      :map <F2> G<F3>
+      :imap <F2> <Esc><F3>
+      :map <F3> oDate: <Esc>:read !date<CR>kJ
+      ```
+
+    For Normal mode \<F2\> is mapped to go to the last line, and then behave like \<F3\> was pressed.  In Insert mode \<F2\> stops Insert mode with \<Esc\> and then also uses \<F3\>. Then \<F3\> is mapped to do the actual work.
+
+    Suppose you hardly ever use Ex mode, and want to use the "Q" command to format text (this was so in old versions of Vim).  This mapping will do it:
+
+    ```vim
+    :map Q gq
+    ```
+
+    But, in rare cases you need to use Ex mode anyway.  Let's map "gQ" to Q, so that you can still go to Ex mode:
+
+    ```vim
+    :map gQ Q
+    ```
+
+    What happens now is that when you type "gQ" it is mapped to "Q".  So far so good. But then "Q" is mapped to "gq", thus typing "gQ" results in "gq", and you don't get to Ex mode at all. To avoid keys to be mapped again, use the ":noremap" command:
+
+    ```vim
+    :noremap gQ Q
+    ```
+
+    Now Vim knows that the "Q" is not to be inspected for mappings that apply to it.  There is a similar command for every mode:
+
+    ```txt
+    :noremap Normal, Visual and Operator-pending
+    :vnoremap Visual
+    :nnoremap Normal
+    :onoremap Operator-pending
+    :noremap! Insert and Command-line
+    :inoremap Insert
+    :cnoremap Command-line
+    ```
+
+  - RECURSIVE MAPPING
+
+    When a mapping triggers itself, it will run forever.  This can be used to
+repeat an action an unlimited number of times.
+
+    For example, you have a list of files that contain a version number in the
+first line.  You edit these files with "vim *.txt".  You are now editing the
+first file.  Define this mapping:
+
+    ```vim
+    :map ,, :s/5.1/5.2/<CR>:wnext<CR>,,
+    ```
+
+    Now you type `,,`. This triggers the mapping. It replaces "5.1" with "5.2" in the first line. Then it does a `:wnext` to write the file and edit the next one. The mapping ends in `,,`. This triggers the same mapping again, thus doing the substitution, etc. This continues until there is an error. In this case it could be a file where the substitute command doesn't find a match for "5.1". You can then make a change to insert "5.1" and continue by typing `,,` again. Or the ":wnext" fails, because you are in the last file in the list. When a mapping runs into an error halfway, the rest of the mapping is discarded. `CTRL-C` interrupts the mapping.
+
+  - DELETE A MAPPING
+
+    To remove a mapping use the ":unmap" command.  Again, the mode the unmapping applies to depends on the command used:
+
+    ```txt
+    :unmap ormal, Visual and Operator-pending
+    :vunmap Visual
+    :nunmap Normal
+    :ounmap Operator-pending
+    :unmap! Insert and Command-line
+    :iunmap Insert
+    :cunmap Command-line
+    ```
+
+    There is a trick to define a mapping that works in Normal and Operator-pending mode, but not in Visual mode.  First define it for all three modes, then delete it for Visual mode:
+
+    ```vim
+    :map <C-A> /---><CR>
+    :vunmap <C-A>
+    ```
+
+    Notice that the five characters "\<C-A\>" stand for the single key `CTRL-A`.
+
+    To remove all mappings use the |:mapclear| command.  You can guess the variations for different modes by now.  Be careful with this command, it can't be undone.
+
 ### visual mod
 
 Visual [Character] mode: Used for selecting individual characters.          [press v]
@@ -506,6 +647,7 @@ I will demonstrate selecting an individual character, selecting a few words, sel
       This command is written into `.vimrc` file. There are at least two ways to trigger it. (1), it will be triggered when a .txt file is opened; (2), using command `:doautocmd BufRead` in command line of Vim
   - `autogroup`, The {group} item in previous description is used when defining an autocommand, groups related autocommands together. This can be used to delete all the autocommands in a certain group.
     - examples
+
       ```vim
       " c & cpp files
       augroup cprograms
@@ -668,6 +810,7 @@ Those marks in the table above are present whether you’ve set any marks manual
         - Press `@a` to replay the macro. This will move to the next line, delete it, and move to the next line again.
 
     Example 2: Applying a Macro Multiple Times
+    
     5. Replay the Macro Multiple Times:
          - You can replay the macro multiple times by specifying a count before `@`.
          - For example, to replay the macro stored in register `a` 3 times, press `3@a`.
@@ -676,9 +819,9 @@ Those marks in the table above are present whether you’ve set any marks manual
   
     6. Open a file in Vim:
 
-      ```shell
-      vim example.txt
-      ```
+        ```shell
+        vim example.txt
+        ```
 
     7. Start Recording into Register a:
 
