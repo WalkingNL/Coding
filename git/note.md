@@ -109,8 +109,19 @@ Note: delete the remote branch.
 
 ![original image](https://github.com/WalkingNL/Pics/blob/master/before_rebase.png)
 
+- `test` branch is created based on the C2.
+- two branches, test and master, exist at the same time.
+
 
 ![rebasing](https://github.com/WalkingNL/Pics/blob/master/rebasing.png)
+```
+git checkout test
+git rebase master
+```
 
 
 ![merge](https://github.com/WalkingNL/Pics/blob/master/merged.png)
+```
+git checkout master
+git merge test
+```
