@@ -10,7 +10,21 @@
   ```
 - the loading time of java scripts
 
-  scripts might be marked with different attributes like `async` or `defer`, it affects when and how the script is executed. 
+  scripts might be marked with different HTML attributes like `async` or `defer`, it affects **when** and **how** the script is executed.
+  - `inline` scripts.
+
+    execute as they are encountered
+   
+    ```HTML
+    <!-- inline scripts -->
+    <script src="js/styles.js"></script>
+    ```
+  
+  - `async` scripts
+
+    the script is executed asynchronously with the rest of the page. It does not block the parsing of the HTML document and will execute as soon as it is downloaded.
+ 
+  - `defer` scripts
 
 ### scripts are parsed
 ### execution context are created
