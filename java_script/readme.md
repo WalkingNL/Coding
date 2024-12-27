@@ -1,6 +1,12 @@
 
 ## the order to execute a javascript program
 ### scripts are loaded
+#### who and how does the action of loading scripts
+
+  this action is done by explorers from HTMLs or some other external files
+
+    <script src="js/styles.js"></script>
+
 ### scripts are parsed
 ### execution context are created
 ### scripts are executed
