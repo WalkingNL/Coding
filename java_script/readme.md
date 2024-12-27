@@ -3,9 +3,14 @@
 ### scripts are loaded
 #### who and how does the action of loading scripts
 
-  this action is done by explorers from HTMLs or some other external files
+- this action is done by explorers from HTMLs or some other external files
 
-    <script src="js/styles.js"></script>
+  ```HTML
+  <script src="js/styles.js"></script>
+  ```
+- the loading time of java scripts
+
+  scripts might be marked with different attributes like `async` or `defer`, it affects when and how the script is executed. 
 
 ### scripts are parsed
 ### execution context are created
